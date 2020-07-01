@@ -165,7 +165,7 @@ OUT
 
   stub uname '-s : echo Linux'
   stub uname '-s : echo Darwin'
-  stub brew "--prefix libyaml : echo '$brew_libdir'" false
+  stub brew "--prefix libyaml : echo '$brew_libdir'" false false
   stub_make_install
 
   install_fixture definitions/needs-yaml
@@ -192,7 +192,7 @@ OUT
   # pyenv/pyenv#1026
   stub uname false false
 
-  stub brew "--prefix readline : echo '$readline_libdir'"
+  stub brew false "--prefix readline : echo '$readline_libdir'"
   stub_make_install
 
   run_inline_definition <<DEF
@@ -222,7 +222,7 @@ OUT
   # pyenv/pyenv#1026
   stub uname false false
 
-  stub brew
+  stub brew false
   stub_make_install
 
   export PYTHON_CONFIGURE_OPTS="CPPFLAGS=-I$readline_libdir/include LDFLAGS=-L$readline_libdir/lib"
