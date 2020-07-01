@@ -1505,7 +1505,6 @@ use_tcltk() {
      local tcltk_version="${tcltk_version_long%.*}"
      local tcltk_flags="--with-tcltk-includes=-I$tcltk_libdir/include --with-tcltk-libs=-L$tcltk_libdir/lib -ltcl$tcltk_version -ltk$tcltk_version"
      echo "python-build: use tcl-tk from homebrew"
-     echo "${tcltk_flags}"
      package_option python configure --with-tcltk-libs="-L$tcltk_libdir/lib -ltcl$tcltk_version -ltk$tcltk_version"
      package_option python configure --with-tcltk-includes="-I$tcltk_libdir/include"
    fi
