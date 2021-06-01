@@ -766,6 +766,7 @@ build_package_standard_build() {
   local PACKAGE_CFLAGS="${package_var_name}_CFLAGS"
 
   if [ "$package_var_name" = "PYTHON" ]; then
+      fallback_to_homebrew
       use_homebrew_readline || use_freebsd_pkg || true
     if is_mac -ge 1014; then
       use_xcode_sdk_zlib || use_homebrew_zlib || true
@@ -1308,6 +1309,17 @@ configured_with_package_dir() {
     fi
   done
   return 1
+}
+
+fallback_to_homebrew() {
+  if is_mac; then
+    local brew_prefix="$(brew --prefix 2>/dev/null || true)"
+    # /usr/local/lib:/usr/lib is the default library search path
+    if [[ -n $brew_prefix && brew_prefix != "/usr" && brew_prefix != "/usr/local" ]]; then
+      export CPPFLAGS="${CPPFLAGS} -I${brew_prefix}/include"
+      export LDFLAGS="${CPPFLAGS} -L${brew_prefix}/lib"
+    fi
+  fi
 }
 
 needs_yaml() {

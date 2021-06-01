@@ -154,6 +154,36 @@ make install
 OUT
 }
 
+@test "homebrew with uncommon prefix is added to search path" {
+  cached_tarball "Python-3.6.2"
+
+  brew_prefix="$TMP/homebrew-prefix"
+  mkdir -p "$brew_prefix"
+
+  # pyenv/pyenv#1026
+  stub uname false false
+
+  stub uname '-s : echo Darwin'
+  stub brew "--prefix : echo '$brew_prefix'" false
+  stub_make_install
+
+  run_inline_definition <<DEF
+install_package "Python-3.6.2" "http://python.org/ftp/python/3.6.2/Python-3.6.2.tar.gz"
+DEF
+  assert_success
+
+  unstub uname
+  unstub brew
+  unstub make
+
+  assert_build_log <<OUT
+Python-3.6.2: CPPFLAGS="-I${TMP}/install/include -I$brew_prefix/include" LDFLAGS="-L${TMP}/install/lib -L$brew_prefix/lib"
+Python-3.6.2: --prefix=$INSTALL_ROOT --libdir=$INSTALL_ROOT/lib
+make -j 2
+make install
+OUT
+}
+
 @test "yaml is linked from Homebrew" {
   cached_tarball "Python-3.6.2"
 
